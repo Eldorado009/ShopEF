@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Core.Entities;
+using System.Net.Mail;
 
 namespace EFProjectApp.DataAccess;
 
@@ -16,6 +17,11 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<Wallet> Wallets { get; set; } = null!;
+    public DbSet<Basket> Baskets { get; set; } = null!;
+    public DbSet<DeliveryAddress> DeliveryAddresses { get; set; } = null!;
+    public DbSet<Invoice> Invoices { get; set; } = null!;
+    
+
 
    
 }

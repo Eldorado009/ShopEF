@@ -1,7 +1,7 @@
 ﻿namespace Shop.Core.Entities;
 
-public class Basket:BaseEntities
+public class Brand
 {
     public int Id { get; set; }
-    public int UserId { get; set; }
+    public string Name { get; set; }
 }

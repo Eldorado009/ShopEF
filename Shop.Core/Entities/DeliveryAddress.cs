@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Shop.Core.Entities;
 
-namespace Shop.Core.Entities
+public class DeliveryAddress : BaseEntities
 {
-    internal class DeliveryAddress
-    {
-    }
+    public int Id { get; set; }
+    public string Address { get; set; } = null!;
+    public string? PostalCode { get; set; } 
+    public int? UserId { get; set; }
+
 }
