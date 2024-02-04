@@ -8,6 +8,12 @@ public class Product: BaseEntities
     public decimal Price { get; set; } = 0;
     public int Quantity { get; set; }
     public int CategoryId { get; set; }
+    public Category Category { get; set; }
     public int BrandId { get; set; }
+    public Brand Brand { get; set; }
     public int DiscountId { get; set; }
+    public Discount Discount { get; set; }
+    public int BasketId { get; set; }
+    public Basket Basket { get; set; }
+    public ICollection<ProductInvoice>? ProductInvoices { get; set; }
 }

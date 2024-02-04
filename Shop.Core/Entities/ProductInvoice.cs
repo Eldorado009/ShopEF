@@ -3,10 +3,10 @@
 public class ProductInvoice
 {
     public int Id { get; set; }
-    public int ProductCount { get; set; }
-    public decimal ProductPrice { get; set; } = 0;
-    public int DiscountApplied { get; set; } 
-    public int ProductId { get; set; }
+    public int ProductCount { get; set; } = 0;
+    public decimal ProductPrice { get; set; }  
     public int InvoiceId { get; set; }
-
+    public Invoice Invoice { get; set; }
+    public int ProductId { get; set; }
+    public Product Product { get; set; }
 }
