@@ -66,6 +66,7 @@ namespace Shop.DataAccess.Migrations
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isAdmin = table.Column<bool>(type: "bit", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Deleted = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -131,8 +132,6 @@ namespace Shop.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CardName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CardNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -197,6 +196,36 @@ namespace Shop.DataAccess.Migrations
                         principalTable: "Discounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cards",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CardNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CardHolderName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Cvc = table.Column<int>(type: "int", nullable: false),
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    WalletId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cards_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Cards_Wallets_WalletId",
+                        column: x => x.WalletId,
+                        principalTable: "Wallets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -267,6 +296,23 @@ namespace Shop.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cards_CardNumber_Cvc",
+                table: "Cards",
+                columns: new[] { "CardNumber", "Cvc" },
+                unique: true,
+                filter: "[CardNumber] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cards_UserId",
+                table: "Cards",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cards_WalletId",
+                table: "Cards",
+                column: "WalletId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeliveryAddresses_UserId",
                 table: "DeliveryAddresses",
                 column: "UserId");
@@ -324,12 +370,6 @@ namespace Shop.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wallets_CardNumber",
-                table: "Wallets",
-                column: "CardNumber",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Wallets_UserId",
                 table: "Wallets",
                 column: "UserId");
@@ -338,6 +378,9 @@ namespace Shop.DataAccess.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Cards");
+
             migrationBuilder.DropTable(
                 name: "DeliveryAddresses");
 

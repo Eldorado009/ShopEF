@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shop.Core.Entities;
 
-namespace Shop.Business.Interface
+namespace Shop.Business.Interface;
+
+public interface IBrandService
 {
-    internal interface IBrandService
-    {
-    }
+    void CreateBrand(string name);
+    void UptadeBrand(int brandId, string newName);
+    void DelateBrand(int brandId, string name);
+    List<Brand> GetAllBrands();
 }

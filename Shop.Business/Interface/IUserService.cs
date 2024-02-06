@@ -8,7 +8,7 @@ public interface IUserService
     void DeleteUser(string userEmail);
     void ActivateProfile(int UserId);
     void DeactivateProfile(int UserId);
-    void Login();
+    void Login(string username, string UserPassword);
     void UpdateProfile(string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone);
     List <User> GetAllUsers();
 }

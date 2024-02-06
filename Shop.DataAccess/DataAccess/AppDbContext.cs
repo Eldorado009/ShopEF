@@ -21,6 +21,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Wallet>()
             .HasKey(w => w.Id);
 
+        modelBuilder.Entity<Card>()
+            .HasKey(c => c.Id);
+
         modelBuilder.Entity<Invoice>()
             .HasKey(i => i.Id);
 
@@ -54,11 +57,22 @@ public class AppDbContext : DbContext
            .HasForeignKey(w => w.UserId)
            .IsRequired();
 
+        modelBuilder.Entity<Card>()
+           .HasIndex(c => new { c.CardNumber, c.Cvc })
+           .IsUnique();
+
         modelBuilder.Entity<Invoice>()
             .HasOne<User>(i => i.User)
             .WithMany(u => u.Invoices) 
             .HasForeignKey(i => i.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Card>()
+            .HasOne(c => c.Wallet)
+            .WithMany(w => w.Cards)
+            .HasForeignKey(c => c.WalletId)
+            .OnDelete(DeleteBehavior.Restrict);
+            
 
         modelBuilder.Entity<User>()
             .HasOne(u => u.Basket)
@@ -79,10 +93,6 @@ public class AppDbContext : DbContext
             .WithMany(w => w.Invoices)
             .HasForeignKey(i => i.WalletId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Wallet>()
-            .HasIndex(w => w.CardNumber)
-            .IsUnique();
 
         modelBuilder.Entity<Product>()
             .HasOne(p => p.Basket)
@@ -122,6 +132,7 @@ public class AppDbContext : DbContext
             .IsRequired();
     }
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Card> Cards { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<Wallet> Wallets { get; set; } = null!;
     public DbSet<Basket> Baskets { get; set; } = null!;

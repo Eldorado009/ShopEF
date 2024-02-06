@@ -73,6 +73,45 @@ namespace Shop.DataAccess.Migrations
                     b.ToTable("Brands");
                 });
 
+            modelBuilder.Entity("Shop.Core.Entities.Card", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("CardHolderName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CardNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Cvc")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WalletId");
+
+                    b.HasIndex("CardNumber", "Cvc")
+                        .IsUnique()
+                        .HasFilter("[CardNumber] IS NOT NULL");
+
+                    b.ToTable("Cards");
+                });
+
             modelBuilder.Entity("Shop.Core.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -333,6 +372,9 @@ namespace Shop.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("isAdmin")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserName", "Email")
@@ -355,14 +397,6 @@ namespace Shop.DataAccess.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("CardName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CardNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -380,9 +414,6 @@ namespace Shop.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CardNumber")
-                        .IsUnique();
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Wallets");
@@ -397,6 +428,25 @@ namespace Shop.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Shop.Core.Entities.Card", b =>
+                {
+                    b.HasOne("Shop.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Core.Entities.Wallet", "Wallet")
+                        .WithMany("Cards")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Shop.Core.Entities.DeliveryAddress", b =>
@@ -537,6 +587,8 @@ namespace Shop.DataAccess.Migrations
 
             modelBuilder.Entity("Shop.Core.Entities.Wallet", b =>
                 {
+                    b.Navigation("Cards");
+
                     b.Navigation("Invoices");
                 });
 #pragma warning restore 612, 618

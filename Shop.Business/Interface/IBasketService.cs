@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Shop.Business.Interface;
 
-namespace Shop.Business.Interface
+public interface IBasketService
 {
-    internal interface IBasketService
-    {
-    }
+    void AddToBasket(int userId, int ProductId);
+    void RemoveFromBasket(int basketId);
+    void ClearBasket(int basketId);
 }
