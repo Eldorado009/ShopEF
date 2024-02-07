@@ -1,6 +1,6 @@
 ﻿namespace Shop.Core.Entities;
 
-public class Card
+public class Card:BaseEntities
 {
     public int Id { get; set; }
     public string? CardNumber { get; set; } = null!;

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shop.Core.Entities;
 
-namespace Shop.Business.Interface
+namespace Shop.Business.Interface;
+
+public interface ICardService
 {
-    internal interface ICardService
-    {
-    }
+    List<Card> GetAllCards();
+    void CreateCard(int userId, string cardNumber, string cardHolderName, int cvc);
+    void UpdateCard(int cardId, string cardNumber, string cardHolderName, int cvc);
+    void DeleteCard(int cardId);
+    Task<decimal> GetCardBalanceAsync(int cardId);
+    Task<bool> CardExists(int cardId);
 }

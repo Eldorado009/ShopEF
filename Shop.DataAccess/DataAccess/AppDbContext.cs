@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Core.Entities;
-using System.Net.Mail;
 
 namespace EFProjectApp.DataAccess;
 
