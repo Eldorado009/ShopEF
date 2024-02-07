@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shop.Core.Entities;
 
-namespace Shop.Business.Interface
+namespace Shop.Business.Interface;
+
+public interface IDeliveryAddress
 {
-    internal interface IDeliveryAddress
-    {
-    }
+    void CreateDeliveryAddress(string address, string postalCode, int userId);
+    List<DeliveryAddress> GetAllDeliveryAddresses(int userId);
+    void GetDeliveryAddressById(int deliveryAddressId);
+    void UpdateDeliveryAddress(int deliveryAddressId, string newAddress, string newPostalCode);
+    void DeleteDeliveryAddress(int deliveryAddressId);
 }

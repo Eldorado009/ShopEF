@@ -27,7 +27,7 @@ public class BrandService : IBrandService
 
     public void DelateBrandAsync(int brandId, string name)
     {
-        Brand brandToDelete = _dbContext.Brands.Find(b => b.Id == brandId && b.Name == name);
+        Brand brandToDelete = _dbContext.Brands.FirstOrDefault(b => b.Id == brandId && b.Name == name);
         if (brandToDelete is not null)
         {
             _dbContext.Brands.Remove(brandToDelete);
@@ -46,7 +46,7 @@ public class BrandService : IBrandService
 
     public void UptadeBrand(int brandId, string newName)
     {
-        Brand brandToUpdate = _dbContext.Brands.Find(b => b.Id == brandId);
+        Brand brandToUpdate = _dbContext.Brands.FirstOrDefault(b => b.Id == brandId);
         if (brandToUpdate != null)
         {
             brandToUpdate.Name = newName;

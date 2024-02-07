@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shop.Core.Entities;
 
-namespace Shop.Business.Interface
+namespace Shop.Business.Interface;
+
+public interface ICategoryService
 {
-    internal interface ICategoryService
-    {
-    }
+    void CreateCategory(string name);
+    List<Category> GetAllCategories();
+    void DeleteCategory(int categoryId);
+    void UpdateCategory(int categoryId, string newName);
 }

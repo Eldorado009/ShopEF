@@ -1,4 +1,5 @@
 ﻿using EFProjectApp.DataAccess;
+using Microsoft.EntityFrameworkCore;
 using Shop.Business.Interface;
 using Shop.Business.Utilities.Exceptions;
 using Shop.Core.Entities;
@@ -16,7 +17,7 @@ public class CardService : ICardService
 
     public Task<bool> CardExists(int cardId)
     {
-        throw new NotImplementedException();
+        return  _dbContext.Cards.AnyAsync(c => c.Id == cardId);
     }
 
     public void CreateCard(int userId, string cardNumber, string cardHolderName, int cvc)
@@ -36,28 +37,60 @@ public class CardService : ICardService
 
         
 
-        card. = DateTime.UtcNow;
+        card.Created = DateTime.UtcNow;
         _dbContext.Cards.Add(card);
         _dbContext.SaveChanges();
     }
 
     public void DeleteCard(int cardId)
     {
-        throw new NotImplementedException();
+        Card cardToRemove = _dbContext.Cards.FirstOrDefault(c => c.Id == cardId);
+        if (cardToRemove is not null)
+        {
+           _dbContext.Cards.Remove(cardToRemove);
+        }
+        else
+        {
+            throw new ArgumentException("Card not found");
+        }
     }
-
     public List<Card> GetAllCards()
     {
-        throw new NotImplementedException();
+        var cards = _dbContext.Cards.ToList();
+
+        if (cards.Count == 0)
+        {
+            new NotFoundException("No cards.");
+        }
+
+        return cards;
     }
 
-    public Task<decimal> GetCardBalanceAsync(int cardId)
+    public async Task<decimal> GetCardBalanceAsync(int cardId)
     {
-        throw new NotImplementedException();
+        Card card =  _dbContext.Cards.Find(cardId);
+        if (card is not null)
+        {
+            return card.Balance;
+        }
+        else
+        {
+            throw new ArgumentException("Card not found");
+        }
     }
 
     public void UpdateCard(int cardId, string cardNumber, string cardHolderName, int cvc)
     {
-        throw new NotImplementedException();
+        Card cardToUpdate = _dbContext.Cards.FirstOrDefault(c => c.Id == cardId);
+        if (cardToUpdate is not null)
+        {
+            cardToUpdate.CardNumber = cardNumber;
+            cardToUpdate.CardHolderName = cardHolderName;
+            cardToUpdate.Cvc = cvc;
+        }
+        else
+        {
+            throw new ArgumentException("Card not found");
+        }
     }
 }
