@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shop.Core.Entities;
 
-namespace Shop.Business.Interface
+namespace Shop.Business.Interface;
+
+public interface IDiscountService
 {
-    internal interface IDiscountService
-    {
-    }
+    void CreateDiscount(string name, string description, decimal discountPercentage, DateTime startDate, DateTime endDate);
+    List<Discount> GetAllDiscounts();
+    void UpdateDiscountAsync(int discountId, string newName, string newDescription, decimal newDiscountPresent, DateTime newStartTime, DateTime newEndTime);
+    void DeleteDiscountAsync(int discountId);
 }

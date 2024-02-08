@@ -3,19 +3,6 @@
 public class User : BaseEntities
 {
 
-    public User(string? name, string userName, string password, string email, string? phone, bool isAdmin)
-    {
-        Name = name;
-        UserName = userName;
-        Password = password;
-        Email = email;
-        Phone = phone;
-        isAdmin = isAdmin;
-
-        DeliveryAddresses = new List<DeliveryAddress>();
-        Wallets = new List<Wallet>();
-        Invoices = new List<Invoice>();
-    }
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public string Surname { get; set; } = null!;

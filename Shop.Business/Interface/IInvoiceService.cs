@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shop.Core.Entities;
 
-namespace Shop.Business.Interface
+namespace Shop.Business.Interface;
+
+public interface IInvoiceService
 {
-    internal interface IInvoiceService
-    {
-    }
+    void CreateInvoice(Invoice invoice, int cardId, int userId);
 }

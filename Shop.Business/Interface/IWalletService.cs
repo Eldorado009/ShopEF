@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shop.Core.Entities;
 
-namespace Shop.Business.Interface
+namespace Shop.Business.Interface;
+
+public interface IWalletService
 {
-    internal interface IWalletService
-    {
-    }
+    List<Wallet> GetAllWallets();
+    void CreateWallet(Wallet newWallet, int userId);
+    bool UpdateWallet(int walletId, int userId);
+    bool DeleteWallet(int walletId);
+    decimal GetWalletBalance(int userId);
+    void IncreaseWalletBalance(int walletId, int cardId, decimal amount);
 }

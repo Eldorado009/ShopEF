@@ -32,7 +32,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Product>()
             .HasKey(p => p.Id);
 
-        modelBuilder.Entity<ProductInvoice>()
+        modelBuilder.Entity<ProductInvoices>()
             .HasKey(pi => pi.Id);
 
         modelBuilder.Entity<Brand>()
@@ -99,13 +99,13 @@ public class AppDbContext : DbContext
             .HasForeignKey(p => p.BasketId)
             .IsRequired();
 
-        modelBuilder.Entity<ProductInvoice>()
+        modelBuilder.Entity<ProductInvoices>()
             .HasOne<Product>(pi => pi.Product)
             .WithMany(p => p.ProductInvoices)
             .HasForeignKey(pi => pi.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<ProductInvoice>()
+        modelBuilder.Entity<ProductInvoices>()
             .HasOne(pi => pi.Invoice)
             .WithMany(i => i.ProductInvoices) 
             .HasForeignKey(pi => pi.InvoiceId)
@@ -137,7 +137,7 @@ public class AppDbContext : DbContext
     public DbSet<Basket> Baskets { get; set; } = null!;
     public DbSet<DeliveryAddress> DeliveryAddresses { get; set; } = null!;
     public DbSet<Invoice> Invoices { get; set; } = null!;
-    public DbSet<ProductInvoice> ProductInvoices { get; set; } = null!;
+    public DbSet<ProductInvoices> ProductInvoices { get; set; } = null!;
     public DbSet<Discount> Discounts { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Brand> Brands { get; set; } = null!;

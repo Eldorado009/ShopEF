@@ -15,5 +15,5 @@ public class Product: BaseEntities
     public Discount Discount { get; set; }
     public int BasketId { get; set; }
     public Basket Basket { get; set; }
-    public ICollection<ProductInvoice>? ProductInvoices { get; set; }
+    public ICollection<ProductInvoices>? ProductInvoices { get; set; }
 }

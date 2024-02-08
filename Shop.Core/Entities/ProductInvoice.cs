@@ -1,6 +1,6 @@
 ﻿namespace Shop.Core.Entities;
 
-public class ProductInvoice
+public class ProductInvoices
 {
     public int Id { get; set; }
     public int ProductCount { get; set; } = 0;

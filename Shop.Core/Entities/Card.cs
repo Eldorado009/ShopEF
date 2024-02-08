@@ -11,4 +11,6 @@ public class Card:BaseEntities
     public User User { get; set; }
     public int WalletId { get; set; }
     public Wallet Wallet { get; set; }
+    public int invoiceId { get; set; }
+    public Invoice Invoice { get; set; }
 }

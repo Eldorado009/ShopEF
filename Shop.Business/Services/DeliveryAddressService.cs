@@ -53,21 +53,38 @@ public class DeliveryAddressService : IDeliveryAddress
 
     public void DeleteDeliveryAddress(int deliveryAddressId)
     {
-        throw new NotImplementedException();
+        DeliveryAddress deliveryAddressToRemove = _dbContext.DeliveryAddresses.FirstOrDefault(d => d.Id == deliveryAddressId);
+        if (deliveryAddressToRemove is not null)
+        {
+            _dbContext.DeliveryAddresses.Remove(deliveryAddressToRemove);
+        }
+        else
+        {
+            throw new ArgumentException("Delivery address not found");
+        }
     }
 
     public List<DeliveryAddress> GetAllDeliveryAddresses(int userId)
     {
-        throw new NotImplementedException();
+        return _dbContext.DeliveryAddresses.Where(d => d.UserId == userId).ToList();
     }
 
     public void GetDeliveryAddressById(int deliveryAddressId)
     {
-        throw new NotImplementedException();
+        _dbContext.DeliveryAddresses.FirstOrDefault(d => d.Id == deliveryAddressId);
     }
 
     public void UpdateDeliveryAddress(int deliveryAddressId, string newAddress, string newPostalCode)
     {
-        throw new NotImplementedException();
+        DeliveryAddress deliveryAddressToUpdate = _dbContext.DeliveryAddresses.FirstOrDefault(d => d.Id == deliveryAddressId);
+        if (deliveryAddressToUpdate != null)
+        {
+            deliveryAddressToUpdate.Address = newAddress;
+            deliveryAddressToUpdate.PostalCode = newPostalCode;
+        }
+        else
+        {
+            throw new ArgumentException("Delivery address not found");
+        }
     }
 }
