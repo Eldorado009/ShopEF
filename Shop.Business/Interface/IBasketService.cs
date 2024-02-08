@@ -1,8 +1,11 @@
-﻿namespace Shop.Business.Interface;
+﻿using Shop.Core.Entities;
+
+namespace Shop.Business.Interface;
 
 public interface IBasketService
 {
-    void AddToBasket(int userId, int ProductId);
-    void RemoveFromBasket(int basketId);
-    void ClearBasket(int basketId);
+    Task<Basket> AddToBasketAsync(int userId, int productId, int quantity);
+    Task UpdateBasketItemAsync(int basketItemId, int quantity);
+    Task RemoveFromBasketAsync(int basketItemId);
+    Task<decimal> CalculateTotalAsync(int userId);
 }

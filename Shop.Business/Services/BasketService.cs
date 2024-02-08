@@ -1,6 +1,7 @@
 ﻿using EFProjectApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Shop.Business.Interface;
+using Shop.Business.Utilities.Exceptions;
 using Shop.Core.Entities;
 using System;
 
@@ -11,71 +12,71 @@ public class BasketService : IBasketService
     private readonly AppDbContext _dbContext;
     private readonly IProductService _productService;
 
-    
-    public void AddToBasket(int userId, int ProductId)
+    public BasketService(AppDbContext dbContext, IProductService productService)
     {
-        try
-        {
-            var basket = _dbContext.Baskets.FirstOrDefault(b => b.UserId == userId);
-            if (basket == null)
-            {
-                basket = new Basket { UserId = userId };
-                _dbContext.Baskets.Add(basket);
-            }
-            basket.Products.Add( new Product { Id = ProductId} );
+        _dbContext = dbContext;
+        _productService = productService;
+    }
 
-            _dbContext.SaveChanges();
-            Console.WriteLine("The product added in basket.");
-        }
-        catch (Exception ex)
+    public async Task<Basket> AddToBasketAsync(int userId, int productId, int quantity)
+    {
+
+        var basketItem = new Basket
         {
-            Console.WriteLine("An error occurred while adding the product to the basket: " + ex.Message);
+            UserId = userId,
+            ProductId = productId,
+            Quantity = quantity
+        };
+
+        await _dbContext.Baskets.AddAsync(basketItem);
+        await _dbContext.SaveChangesAsync();
+
+        return basketItem;
+    }
+
+    public async Task UpdateBasketItemAsync(int basketItemId, int quantity)
+    {
+        var basketItem = (basketItemId);
+
+        if (basketItem != null)
+        {
+            ValidateQuantity(quantity);
+
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+    public async Task<decimal> CalculateTotalAsync(int userId)
+    {
+        await AuthenticateUserAsync(userId);
+
+        var basketItems = await _dbContext.Baskets
+            .Include(b => b.Product)
+            .Where(b => b.UserId == userId)
+            .ToListAsync();
+
+        return basketItems.Sum(b => b.Quantity * (b.Product?.Price ?? 0));
+    }
+
+    private void ValidateQuantity(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ArgumentException("Quantity must be a positive integer.");
         }
     }
 
-    public void ClearBasket(int basketId)
+    private async Task AuthenticateUserAsync(int userId)
     {
-        try
+        var authenticatedUser = await _dbContext.Users.FindAsync(userId);
+
+        if (authenticatedUser == null)
         {
-            var basket = _dbContext.Baskets.Include(b => b.Products).FirstOrDefault(b => b.Id == basketId);
-
-            if (basket == null || basket.Products.Any())
-            {
-                Console.WriteLine("The basket is already empty.");
-                return;
-            }
-
-            basket.Products.Clear();
-
-            _dbContext.SaveChanges();
-            Console.WriteLine("The basket has been cleared.\r\n");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("An error occurred while clearing the basket: " + ex.Message);
+            throw new UnauthorizedAccessException("User authentication failed.");
         }
     }
 
-    public void RemoveFromBasket(int basketId)
+    public Task RemoveFromBasketAsync(int basketItemId)
     {
-        try
-        {
-            var basket = _dbContext.Baskets.Include(b => b.Products).FirstOrDefault(b => b.Id == basketId);
-            var itemToRemove = basket.Products.FirstOrDefault(item => item.Id == basketId);
-
-            if (basket == null || itemToRemove == null)
-            {
-                Console.WriteLine("The product is not in your Basket.");
-                return;
-            }
-            basket.Products.Remove(itemToRemove);
-
-            _dbContext.SaveChanges();
-            Console.WriteLine("The product has been removed from the basket.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("An error occurred while removing the rune from the basket: " + ex.Message);
-        }
+        throw new NotImplementedException();
     }
 }

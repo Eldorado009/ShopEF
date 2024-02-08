@@ -23,13 +23,10 @@ public class InvoiceService : IInvoiceService
     {
         try
         {
-            // Retrieve the list of product invoices from the database based on the IDs
             var productInvoices = _dbContext.ProductInvoices.Where(pi => productInvoiceIds.Contains(pi.Id)).ToList();
 
-            // Calculate the total price of the product invoices
             decimal totalPrice = productInvoices.Sum(pi => pi.ProductPrice);
 
-            // Retrieve the card from the database based on the cardId
             var card = _dbContext.Cards.Find(cardId);
             if (card == null)
             {
@@ -40,18 +37,14 @@ public class InvoiceService : IInvoiceService
                 throw new ArgumentException($"Insufficient funds in the card with ID {cardId}.");
             }
 
-            // Create a new Invoice object
             var invoice = new Invoice
             {
                 InvoiceDate = DateTime.UtcNow,
                 UserId = userId
             };
-
-            // Add the invoice to the database context and save changes
             _dbContext.Invoices.Add(invoice);
             _dbContext.SaveChanges();
 
-            // Deduct the total price from the card balance and save changes
             card.Balance -= totalPrice;
             _dbContext.SaveChanges();
             return true;

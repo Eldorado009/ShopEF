@@ -21,7 +21,9 @@ bool isContinue = true;
 while (isContinue)
 {
     Console.ForegroundColor = ConsoleColor.Cyan;
-    Console.WriteLine("\n1) Login\n2) Register\n3) Exit");
+    Console.WriteLine("1) Login\n" +
+                      "2) Register\n" +
+                      "3) Exit");
     var option = Console.ReadLine();
     Console.Write("Choose the option: ");
     Console.ResetColor();
@@ -103,7 +105,7 @@ while (isContinue)
         while (true)
         {
             var key = Console.ReadKey(true);
-            if (key.Key == ConsoleKey.Enter)
+           if (key.Key == ConsoleKey.Enter)
             {
                 Console.WriteLine();
                 break;

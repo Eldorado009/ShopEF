@@ -23,12 +23,10 @@ public class Card:BaseEntities
     public string? CardHolderName { get; set; } = null!;
     public int Cvc { get; set; }
     public decimal Balance { get; set; }
-    public int UserId { get; set; }
-    public User User { get; set; }
-    public int WalletId { get; set; }
-    public Wallet Wallet { get; set; }
-    public int invoiceId { get; set; }
-    [NotMapped]
-    public object InvoiceId { get; set; }
-    public Invoice Invoice { get; set; }
+    public int? UserId { get; set; }
+    public User? User { get; set; }
+    public int? InvoiceId { get; set; }
+    public Invoice? Invoice { get; set; }
+    public int? WalletId { get; set; }
+    public Wallet? Wallet { get; set; }
 }
