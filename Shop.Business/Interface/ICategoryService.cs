@@ -4,7 +4,7 @@ namespace Shop.Business.Interface;
 
 public interface ICategoryService
 {
-    void CreateCategory(string name);
+    Category CreateCategory(string name);
     List<Category> GetAllCategories();
     void DeleteCategory(int categoryId);
     void UpdateCategory(int categoryId, string newName);

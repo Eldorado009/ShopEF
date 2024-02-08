@@ -4,13 +4,13 @@ namespace Shop.Business.Interface;
 
 public interface IUserService
 {
-    void CreateUser(User user, string name, string surname, string username, string UserEmail, string UserPassword, string UserPhone, bool isAdmin);
+    Task <bool> CreateUser( string name, string surname, string username, string UserEmail, string UserPassword, string UserPhone, bool isAdmin);
     void DeleteUser(string userEmail);
-    void ActivateProfile(int UserId);
-    void DeactivateProfile(int UserId);
-    void Login(string username, string UserPassword);
+    bool ActivateProfile(int UserId);
+    bool DeactivateProfile(int UserId);
+    bool Login(string username, string UserPassword);
     Task<bool> Register(string username, string email, string password);
-    Task<bool> IsUserAdmin(string userName);
-    void UpdateProfile(string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone);
+    bool IsUserAdmin(string userName);
+    bool UpdateProfile(string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone);
     List <User> GetAllUsers();
 }

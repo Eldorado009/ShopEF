@@ -4,5 +4,5 @@ namespace Shop.Business.Interface;
 
 public interface IInvoiceService
 {
-    void CreateInvoice(Invoice invoice, int cardId, int userId);
+    bool CreateInvoice(List<int> productInvoiceIds, int cardId, int userId);
 }

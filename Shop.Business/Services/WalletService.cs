@@ -17,7 +17,7 @@ public class WalletService : IWalletService
         _dbContext = dbContext;
         _cardService = cardService;
     }
-    public void CreateWallet(Wallet newWallet, int userId)
+    public bool CreateWallet(Wallet newWallet, int userId)
     {
         try
         {
@@ -27,10 +27,12 @@ public class WalletService : IWalletService
             };
             _dbContext.Wallets.Add(newWallet);
             _dbContext.SaveChanges();
+            return true;
         }
         catch (Exception ex)
         {
             Console.WriteLine("An error occurred while adding the product to the wallet: " + ex.Message);
+            return false;
         }
     }
 

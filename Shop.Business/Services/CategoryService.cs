@@ -13,7 +13,7 @@ public class CategoryService : ICategoryService
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public void CreateCategory(string name)
+    public Category CreateCategory(string name)
     {
         var category = new Category
         {
@@ -22,6 +22,7 @@ public class CategoryService : ICategoryService
 
         _dbContext.Categories.Add(category);
         _dbContext.SaveChanges();
+        return category;
     }
     public void DeleteCategory(int categoryId)
     {

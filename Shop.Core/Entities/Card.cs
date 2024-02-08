@@ -1,4 +1,6 @@
-﻿namespace Shop.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Shop.Core.Entities;
 
 public class Card:BaseEntities
 {
@@ -26,5 +28,7 @@ public class Card:BaseEntities
     public int WalletId { get; set; }
     public Wallet Wallet { get; set; }
     public int invoiceId { get; set; }
+    [NotMapped]
+    public object InvoiceId { get; set; }
     public Invoice Invoice { get; set; }
 }

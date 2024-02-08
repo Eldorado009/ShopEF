@@ -28,14 +28,17 @@ while (isContinue)
 
     if (option == "1")
     {
-        var (loginSuccess, UsernameOrEmail) = AttemptLogin(userService);
+        var loginResult = await AttemptLogin(userService); 
+        var loginSuccess = loginResult.Item1; 
+        var usernameOrEmail = loginResult.Item2; 
+
         if (loginSuccess)
         {
             Console.WriteLine("Invalid credentials. Please try again.");
         }
         else
         {
-            bool isAdmin = userService.IsUserAdmin(UsernameOrEmail);
+            bool isAdmin = userService.IsUserAdmin(usernameOrEmail);
 
             if (isAdmin)
             {
@@ -47,6 +50,7 @@ while (isContinue)
             }
         }
     }
+
     else if (option == "2")
     {
         var registration = await AttemptRegistration(userService);
@@ -89,13 +93,13 @@ while (isContinue)
         Console.Write("Enter password: ");
         var password = ReadPassword();
 
-        var loginSuccess = await userService.Login(usernameOrEmail, password);
+        bool loginSuccess = userService.Login(usernameOrEmail, password);
         return (loginSuccess, usernameOrEmail);
     }
 
     static string ReadPassword()
     {
-        var password = "0404";
+        var password = "";
         while (true)
         {
             var key = Console.ReadKey(true);
@@ -149,6 +153,8 @@ while (isContinue)
                     case AdminOption.CreateUser:
                         Console.Write("Enter name: ");
                         var name = Console.ReadLine();
+                        Console.Write("Enter Surname: ");
+                        var surName = Console.ReadLine();
                         Console.Write("Enter username: ");
                         var userName = Console.ReadLine();
                         Console.Write("Enter password: ");
@@ -159,8 +165,9 @@ while (isContinue)
                         var UserPhone = Console.ReadLine();
                         Console.Write("Is Admin (true/false): ");
                         bool isAdmin = bool.Parse(Console.ReadLine() ?? "false");
-
+                        //User user, string name, string surname, string username, string UserEmail, string UserPassword, string UserPhone, bool isAdmin
                         var createUserResult = await UserService.CreateUser(name,
+                                                                            surName,
                                                                             userName,
                                                                             password,
                                                                             email,
@@ -195,8 +202,7 @@ while (isContinue)
                             var newName = Console.ReadLine();
                             Console.Write("Enter new phone (leave blank to keep unchanged): ");
                             var newPhone = Console.ReadLine();
-
-                            var updateResult = UserService.UpdateProfile(userId, newUsername, newEmail, newPassword, newName, newPhone);
+                            bool updateResult = UserService.UpdateProfile(newName, newUsername,newEmail,newPassword,newPhone);
 
                             if (updateResult == true)
                             {
@@ -263,7 +269,7 @@ while (isContinue)
 
                         if (int.TryParse(activateUserId, out int idToActivate))
                         {
-                            var activationResult = UserService.ActivateProfile(idToActivate);
+                            bool activationResult =  UserService.ActivateProfile(idToActivate);
 
                             if (activationResult)
                             {
@@ -286,7 +292,7 @@ while (isContinue)
 
                         if (int.TryParse(deactivateUserId, out int idToDeactivate))
                         {
-                            var deactivationResult = UserService.DeactivateProfile(idToDeactivate);
+                            bool deactivationResult = UserService.DeactivateProfile(idToDeactivate);
 
                             if (deactivationResult)
                             {
@@ -354,30 +360,32 @@ while (isContinue)
                         {
                             Console.Write("Enter new product name (leave blank to keep unchanged): ");
                             var newName = Console.ReadLine();
+
                             Console.Write("Enter new product description (leave blank to keep unchanged): ");
                             var newDescription = Console.ReadLine();
 
                             Console.Write("Enter new product price (leave blank to keep unchanged): ");
                             var priceInput = Console.ReadLine();
-                            decimal? newPrice = !string.IsNullOrWhiteSpace(priceInput) ? decimal.Parse(priceInput) : null;
+                            decimal newPrice = string.IsNullOrWhiteSpace(priceInput) ? 0 : decimal.Parse(priceInput);
 
                             Console.Write("Enter new product quantity available (leave blank to keep unchanged): ");
                             var quantityInput = Console.ReadLine();
-                            int? newQuantityAvailable = !string.IsNullOrWhiteSpace(quantityInput) ? int.Parse(quantityInput) : null;
+                            int newQuantity = string.IsNullOrWhiteSpace(quantityInput) ? 0 : int.Parse(quantityInput);
 
                             Console.Write("Enter new product category ID (leave blank to keep unchanged): ");
                             var categoryIdInput = Console.ReadLine();
-                            int? newCategoryId = !string.IsNullOrWhiteSpace(categoryIdInput) ? int.Parse(categoryIdInput) : null;
+                            int newCategoryId = string.IsNullOrWhiteSpace(categoryIdInput) ? 0 : int.Parse(categoryIdInput);
 
                             Console.Write("Enter new product brand ID (leave blank to keep unchanged): ");
                             var brandIdInput = Console.ReadLine();
-                            int? newBrandId = !string.IsNullOrWhiteSpace(brandIdInput) ? int.Parse(brandIdInput) : null;
+                            int newBrandId = string.IsNullOrWhiteSpace(brandIdInput) ? 0 : int.Parse(brandIdInput);
 
                             Console.Write("Enter new product discount ID (leave blank to keep unchanged): ");
                             var discountIdInput = Console.ReadLine();
-                            int? newDiscountId = !string.IsNullOrWhiteSpace(discountIdInput) ? int.Parse(discountIdInput) : null;
+                            int newDiscountId = string.IsNullOrWhiteSpace(discountIdInput) ? 0 : int.Parse(discountIdInput);
 
-                            var updateResult = await productService.UpdateProduct(productId, newName, newDescription, newPrice, newQuantity, newCategoryId, newBrandId, newDiscountId);
+
+                            bool updateResult =  productService.UpdateProduct(productId, newName, newDescription, newPrice, newQuantity, newCategoryId, newBrandId, newDiscountId);
 
                             if (updateResult == true)
                             {
@@ -402,7 +410,7 @@ while (isContinue)
                             var productDeleteConfirmation = Console.ReadLine();
                             if (productDeleteConfirmation.Equals("yes", StringComparison.OrdinalIgnoreCase))
                             {
-                                var productExists = productService.(productToDeleteId);
+                                bool productExists = productService.DeleteProduct(productToDeleteId);
                                 if (productExists)
                                 {
                                     productService.DeleteProduct(productToDeleteId);
@@ -448,7 +456,7 @@ while (isContinue)
                         Console.Write("Enter the product ID to deactivate: ");
                         if (int.TryParse(Console.ReadLine(), out int deactivateProductId))
                         {
-                            var deactivateResult = productService.DeactivateProduct(deactivateProductId);
+                            bool deactivateResult = productService.DeactivateProduct(deactivateProductId);
                             if (deactivateResult)
                             {
                                 Console.WriteLine("Product deactivated successfully.");
@@ -476,7 +484,7 @@ while (isContinue)
                                 Console.WriteLine($"Name: {product.Name}");
                                 Console.WriteLine($"Description: {product.Description}");
                                 Console.WriteLine($"Price: {product.Price:C}");
-                                Console.WriteLine($"Quantity Available: {product.QuantityAvailable}");
+                                Console.WriteLine($"Quantity Available: {product.Quantity}");
                                 Console.WriteLine($"Category ID: {product.CategoryId}");
                                 Console.WriteLine($"Brand ID: {product.BrandId}");
                                 Console.WriteLine($"Discount ID: {product.DiscountId}");
@@ -536,36 +544,29 @@ while (isContinue)
             }
         }
     }
-    static async Task UserDesk(UserService userService, ProductService productService, CardService cardService, WalletService walletService, ProductInvoiceService invoiceItemService, InvoiceService invoiceService)
+     async Task UserDesk(UserService userService, ProductService productService, CardService cardService, WalletService walletService, ProductInvoiceService invoiceItemService, InvoiceService invoiceService)
     {
         bool userSession = true;
         while (userSession)
         {
-            Console.WriteLine("\n--- User Panel ---");
+            Console.WriteLine("\n--- User Desk ---");
             Console.Write(
-                "1) Get User By Id\n" +
-                "2) Product Exists\n" +
-                "3) Get All Products\n" +
-                "4) Get Product By Id\n" +
-                "5) Get Card By Id\n" +
-                "6) Get All Cards\n" +
-                "7) Create Card\n" +
-                "8) Update Card\n" +
-                "9) Delete Card\n" +
-                "10) Increase Card Balance\n" +
-                "11) Decrease Card Balance\n" +
-                "12) Check if Card Exists\n" +
-                "13) Get Card Balance\n" +
-                "14) Get Wallet By Id\n" +
-                "15) Get All Wallets\n" +
-                "16) Create Wallet\n" +
-                "17) Update Wallet\n" +
-                "18) Delete Wallet\n" +
-                "19) Get Wallet Balance\n" +
-                "20) Increase Wallet Balance\n" +
-                "21) CreateInvoiceItem\n" +
-                "22) CreateInvoice\n" +
-                "22) Logout\n" +
+                "1) Get All Products\n" +
+                "2) Get All Cards\n" +
+                "3) Create Card\n" +
+                "4) Update Card\n" +
+                "5) Delete Card\n" +
+                "6) Card Exists\n" +
+                "7) Get Card Balance\n" +
+                "8) Get All Wallets\n" +
+                "9) Create Wallet\n" +
+                "10) Update Wallet\n" +
+                "11) Delete Wallet\n" +
+                "12) Get Wallet Balance\n" +
+                "13) Increase Wallet Balance\n" +
+                "14) Create Product Invoice\n" +
+                "15) Create Invoice\n" +
+                "16) Exit\n" +
                 "Choose an option: ");
             var input = Console.ReadLine();
             if (int.TryParse(input, out int option) && Enum.IsDefined(typeof(UserOption), option))
@@ -644,8 +645,7 @@ while (isContinue)
 
                         try
                         {
-                            var newCard = new Card(cardNumber, cardHolderName, cvc, userId, balance, walletId);
-                            cardService.CreateCard(newCard);
+                            cardService.CreateCard(userId, cardNumber, cardHolderName, cvc);
                             Console.WriteLine("Card created successfully.");
                         }
                         catch (Exception ex)
@@ -665,12 +665,17 @@ while (isContinue)
                             var newCardHolderNameInput = Console.ReadLine();
                             string? newCardHolderName = string.IsNullOrWhiteSpace(newCardHolderNameInput) ? null : newCardHolderNameInput;
 
-                            Console.Write("Enter new CVV (leave blank to keep unchanged): ");
+                            Console.Write("Enter new CVC (leave blank to keep unchanged): ");
                             var cvcInput = Console.ReadLine();
-                            int? newCvc = null;
-                            if (string.IsNullOrWhiteSpace(cvcInput))
+                            int newCvc; // Non-nullable
+                            if (!string.IsNullOrWhiteSpace(cvcInput))
                             {
                                 newCvc = int.Parse(cvcInput);
+                            }
+                            else
+                            {
+                                // Assign a default value when cvcInput is null or empty
+                                newCvc = 0; // You can change this to any other default value you prefer
                             }
 
                             try
@@ -682,6 +687,7 @@ while (isContinue)
                             {
                                 Console.WriteLine($"Error: {ex.Message}");
                             }
+
                         }
                         else
                         {
@@ -780,10 +786,10 @@ while (isContinue)
                             try
                             {
                                 var wallet = new Wallet { UserId = userID };
-                                bool created = WalletService.CreateWallet(wallet, userID);
+                                bool created = walletService.CreateWallet(wallet, userID);
                                 if (created)
                                 {
-                                    Console.WriteLine("Wallet created successfully.");
+                                    Console.WriteLine("Wallet created successful.");
                                 }
                                 else
                                 {
@@ -933,7 +939,7 @@ while (isContinue)
                                         ProductId = productId,
                                         ProductCount = quantity
                                     };
-                                    bool success = ProductInvoiceService.CreateProductInvoice(newProductInvoices);
+                                    bool success = productInvoiceService.CreateProductInvoice(newProductInvoices);
                                     if (success)
                                     {
                                         Console.WriteLine("Product Invoice created successful.");

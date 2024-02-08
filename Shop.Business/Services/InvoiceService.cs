@@ -19,37 +19,47 @@ public class InvoiceService : IInvoiceService
     }
 
 
-    public void CreateInvoice(Invoice invoice, int cardId, int userId)
+    public bool CreateInvoice(List<int> productInvoiceIds, int cardId, int userId)
     {
         try
         {
-            var ProductInvoice =  _dbContext.ProductInvoices.ToList();
-            decimal totalPrice = ProductInvoice.Sum(ProductInvoice => ProductInvoice.ProductPrice = 0);
+            // Retrieve the list of product invoices from the database based on the IDs
+            var productInvoices = _dbContext.ProductInvoices.Where(pi => productInvoiceIds.Contains(pi.Id)).ToList();
 
-            var card =_dbContext.Cards.Find(cardId);
+            // Calculate the total price of the product invoices
+            decimal totalPrice = productInvoices.Sum(pi => pi.ProductPrice);
+
+            // Retrieve the card from the database based on the cardId
+            var card = _dbContext.Cards.Find(cardId);
             if (card == null)
-            { 
-                new NotFoundException($"Card not found with ID {cardId}.");
+            {
+                 new NotFoundException($"Card not found with ID {cardId}.");
             }
             if (card.Balance < totalPrice)
             {
-                new ArgumentException($"Insufficient funds in the card with ID {cardId}.");
+                throw new ArgumentException($"Insufficient funds in the card with ID {cardId}.");
             }
-            var Invoice = new Invoice
+
+            // Create a new Invoice object
+            var invoice = new Invoice
             {
                 InvoiceDate = DateTime.UtcNow,
                 UserId = userId
             };
 
+            // Add the invoice to the database context and save changes
             _dbContext.Invoices.Add(invoice);
             _dbContext.SaveChanges();
 
+            // Deduct the total price from the card balance and save changes
             card.Balance -= totalPrice;
             _dbContext.SaveChanges();
+            return true;
         }
         catch (Exception ex)
         {
             throw new Exception("Failed to create invoice.", ex);
         }
     }
+
 }

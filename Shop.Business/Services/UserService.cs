@@ -17,72 +17,75 @@ namespace Shop.Business.Services
             _dbContext = dbContext;
         }
 
-        public async void ActivateProfile(int UserId)
+        public bool ActivateProfile(int UserId)
         {
             try
             {
-                var user = await _dbContext.Users.FindAsync(UserId);
+                var user =  _dbContext.Users.Find(UserId);
                 if (user != null)
                 {
                     user.isAdmin = true;
-                    await _dbContext.SaveChangesAsync();
-                    
+                     _dbContext.SaveChanges();
                 }
+                    return true;
                 
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred while activating the user: " + ex.Message);
+                return false;
             }
         }
 
-        public void CreateUser(User user, string name, string surname, string username, string UserEmail, string UserPassword, string UserPhone, bool isAdmin)
+            public void CreateUser(User user, string name, string surname, string username, string UserEmail, string UserPassword, string UserPhone, bool isAdmin)
+            {
+                try
+                {
+                    user.Name = name;
+                    user.Surname = surname;
+                    user.UserName = username;
+                    user.Email = UserEmail;
+                    user.Password = UserPassword;
+                    user.Phone = UserPhone;
+                    user.isAdmin = isAdmin;
+
+                    _dbContext.Users.Add(user);
+                    _dbContext.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred while creating the user: " + ex.Message);
+                }
+            }
+
+        public  bool DeactivateProfile(int UserId)
         {
             try
             {
-                user.Name = name;
-                user.Surname = surname;
-                user.UserName = username;
-                user.Email = UserEmail;
-                user.Password = UserPassword;
-                user.Phone = UserPhone;
-                user.isAdmin = isAdmin;
-
-                _dbContext.Users.Add(user);
-                _dbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occurred while creating the user: " + ex.Message);
-            }
-        }
-
-        public async void DeactivateProfile(int UserId)
-        {
-            try
-            {
-                var user = await _dbContext.Users.FindAsync(UserId);
+                var user =  _dbContext.Users.Find(UserId);
                 if (user != null)
                 {
                     user.isAdmin = false;
-                    await _dbContext.SaveChangesAsync();
+                     _dbContext.SaveChanges();
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred while deactivating the user: " + ex.Message);
+                return false;
             }
         }
 
-        public async Task<bool> DeleteUser(string userEmail)
+        public  bool DeleteUser(int deletedUserId)
         {
             try
             {
-                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+                var user =  _dbContext.Users.FirstOrDefault(u => u.Id == deletedUserId);
                 if (user is not null)
                 {
                     _dbContext.Users.Remove(user);
-                    await _dbContext.SaveChangesAsync();
+                     _dbContext.SaveChanges();
                     return true;
                 }
                 return false;
@@ -99,13 +102,13 @@ namespace Shop.Business.Services
             return _dbContext.Users.ToList();
         }
 
-        public async Task<bool> IsUserAdmin(string userName)
+        public  bool IsUserAdmin(string userName)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+            var user =  _dbContext.Users.FirstOrDefault(u => u.UserName == userName);
             return user != null && user.isAdmin;
         }
 
-        public void Login(string username, string UserPassword)
+        public bool Login(string username, string UserPassword)
         {
             try
             {
@@ -119,14 +122,16 @@ namespace Shop.Business.Services
                 {
                     Console.WriteLine("Login failed. Username or password is incorrect.");
                 }
+                    return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred during the login process: " + ex.Message);
+                return false;
             }
         }
 
-        public void UpdateProfile(int userId, string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone)
+        public bool UpdateProfile(string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone)
         {
             try
             {
@@ -146,10 +151,12 @@ namespace Shop.Business.Services
                 {
                     Console.WriteLine("Profile update failed. User not found.");
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An error occurred during the profile update process: " + ex.Message);
+                return false;
             }
         }
         public async Task<bool> Register(string username, string email, string password)
@@ -185,7 +192,7 @@ namespace Shop.Business.Services
             throw new NotImplementedException();
         }
 
-        public void UpdateProfile(string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone)
+        public Task<bool> CreateUser(string name, string surname, string username, string UserEmail, string UserPassword, string UserPhone, bool isAdmin)
         {
             throw new NotImplementedException();
         }

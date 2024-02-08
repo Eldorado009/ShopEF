@@ -70,17 +70,18 @@ public class ProductService : IProductService
     }
 
 
-    public void DeactivateProduct(int productId)
+    public bool DeactivateProduct(int productId)
     {
         var product = _dbContext.Products.Find(productId);
         if (product != null && !product.IsDeleted)
         {
             product.IsDeleted = true;
-            _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
         }
+            return true;
     }
 
-    public void DeleteProduct(int productId)
+    public bool DeleteProduct(int productId)
     {
         var productToDelete = _dbContext.Products.Find(productId);
 
@@ -88,10 +89,12 @@ public class ProductService : IProductService
         {
             _dbContext.Products.Remove(productToDelete);
             _dbContext.SaveChanges();
+            return true;
         }
         else
         {
             new NotFoundException($"Product with ID {productId} not found.");
+            return false;
         }
 
     }
@@ -107,7 +110,7 @@ public class ProductService : IProductService
         return products;
     }
 
-    public void UpdateProduct(int productId, string newName, string newDescription, decimal newPrice, int quantity, int newCategoryId, int newBrandId, int newDiscountId)
+    public bool UpdateProduct(int productId, string newName, string newDescription, decimal newPrice, int quantity, int newCategoryId, int newBrandId, int newDiscountId)
     {
         Product productToUpdate = _dbContext.Products.FirstOrDefault(p => p.Id == productId);
         if (productToUpdate is not null) 
@@ -119,10 +122,12 @@ public class ProductService : IProductService
             productToUpdate.CategoryId = newCategoryId;
             productToUpdate.BrandId = newBrandId;
             productToUpdate.DiscountId = newDiscountId;
+            return true;
         }
         else
         {
             new ArgumentException("Product not found");
+            return false;
         }
     }
 }

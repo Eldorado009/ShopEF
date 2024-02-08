@@ -15,5 +15,6 @@ public class User : BaseEntities
     public ICollection<DeliveryAddress>? DeliveryAddresses { get; set; }
     public ICollection<Wallet>? Wallets { get; set; }
     public ICollection<Invoice>? Invoices { get; set; }
+    public ICollection<Card>? Cards { get; set; }
 }
 

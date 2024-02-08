@@ -11,5 +11,5 @@ public class Invoice:BaseEntities
     public int? WalletId { get; set; }
     public Wallet? Wallet { get; set; }
     public ICollection<ProductInvoices>? ProductInvoices { get; set; }
-    public ICollection<Card> Cards { get;}
+    public ICollection<Card>? Cards { get;}
 }

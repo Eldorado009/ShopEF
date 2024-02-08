@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shop.Core.Entities;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 
 namespace EFProjectApp.DataAccess;
 
@@ -43,6 +46,8 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Discount>()
             .HasKey(d => d.Id);
+
+        modelBuilder.Entity<Card>().Ignore(c => c.InvoiceId);
 
         modelBuilder.Entity<DeliveryAddress>()
             .HasOne(da => da.User)
@@ -129,6 +134,19 @@ public class AppDbContext : DbContext
             .WithMany(d => d.Products) 
             .HasForeignKey(p => p.DiscountId)
             .IsRequired();
+
+        modelBuilder.Entity<User>()
+             .HasMany(u => u.Cards)
+             .WithOne(c => c.User)
+             .HasForeignKey(c => c.UserId);
+
+        modelBuilder.Entity<Card>()
+        .HasOne(c => c.Invoice)
+        .WithMany(i => i.Cards)
+        .HasForeignKey(c => c.InvoiceId);
+
+
+
     }
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Card> Cards { get; set; } = null!;
@@ -141,9 +159,4 @@ public class AppDbContext : DbContext
     public DbSet<Discount> Discounts { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Brand> Brands { get; set; } = null!;
-
-
-
-
-
 }

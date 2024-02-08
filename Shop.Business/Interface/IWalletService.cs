@@ -5,7 +5,7 @@ namespace Shop.Business.Interface;
 public interface IWalletService
 {
     List<Wallet> GetAllWallets();
-    void CreateWallet(Wallet newWallet, int userId);
+    bool CreateWallet(Wallet newWallet, int userId);
     bool UpdateWallet(int walletId, int userId);
     bool DeleteWallet(int walletId);
     decimal GetWalletBalance(int userId);

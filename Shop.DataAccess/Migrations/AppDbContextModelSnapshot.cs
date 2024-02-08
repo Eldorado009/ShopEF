@@ -90,8 +90,20 @@ namespace Shop.DataAccess.Migrations
                     b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Cvc")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Deleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -99,11 +111,16 @@ namespace Shop.DataAccess.Migrations
                     b.Property<int>("WalletId")
                         .HasColumnType("int");
 
+                    b.Property<int>("invoiceId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
                     b.HasIndex("WalletId");
+
+                    b.HasIndex("invoiceId");
 
                     b.HasIndex("CardNumber", "Cvc")
                         .IsUnique()
@@ -299,7 +316,7 @@ namespace Shop.DataAccess.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Shop.Core.Entities.ProductInvoice", b =>
+            modelBuilder.Entity("Shop.Core.Entities.ProductInvoices", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -444,6 +461,14 @@ namespace Shop.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Shop.Core.Entities.Invoice", "Invoice")
+                        .WithMany("Cards")
+                        .HasForeignKey("invoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
+
                     b.Navigation("User");
 
                     b.Navigation("Wallet");
@@ -513,7 +538,7 @@ namespace Shop.DataAccess.Migrations
                     b.Navigation("Discount");
                 });
 
-            modelBuilder.Entity("Shop.Core.Entities.ProductInvoice", b =>
+            modelBuilder.Entity("Shop.Core.Entities.ProductInvoices", b =>
                 {
                     b.HasOne("Shop.Core.Entities.Invoice", "Invoice")
                         .WithMany("ProductInvoices")
@@ -565,6 +590,8 @@ namespace Shop.DataAccess.Migrations
 
             modelBuilder.Entity("Shop.Core.Entities.Invoice", b =>
                 {
+                    b.Navigation("Cards");
+
                     b.Navigation("ProductInvoices");
                 });
 
