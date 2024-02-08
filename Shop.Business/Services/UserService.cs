@@ -26,9 +26,9 @@ namespace Shop.Business.Services
                 {
                     user.isAdmin = true;
                     await _dbContext.SaveChangesAsync();
-                    //return true;
+                    
                 }
-                //return false;
+                
             }
             catch (Exception ex)
             {
@@ -66,9 +66,7 @@ namespace Shop.Business.Services
                 {
                     user.isAdmin = false;
                     await _dbContext.SaveChangesAsync();
-                    //return true;
                 }
-                //return false;
             }
             catch (Exception ex)
             {
@@ -128,7 +126,7 @@ namespace Shop.Business.Services
             }
         }
 
-        public void UpdateProfile(string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone)
+        public void UpdateProfile(int userId, string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone)
         {
             try
             {
@@ -154,8 +152,40 @@ namespace Shop.Business.Services
                 Console.WriteLine("An error occurred during the profile update process: " + ex.Message);
             }
         }
+        public async Task<bool> Register(string username, string email, string password)
+        {
+            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == username || u.Email == email);
+            if (existingUser != null)
+            {
+                return false;
+            }
+
+            var newUser = new User
+            {
+                UserName = username,
+                Email = email,
+                Password = password 
+            };
+
+            try
+            {
+                _dbContext.Users.Add(newUser);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error registering user: {ex.Message}");
+                return false; 
+            }
+        }
 
         void IUserService.DeleteUser(string userEmail)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateProfile(string name, string newUsername, string newUserEmail, string newUserPassword, string newUserPhone)
         {
             throw new NotImplementedException();
         }

@@ -22,7 +22,7 @@ public class CardService : ICardService
 
     public void CreateCard(int userId, string cardNumber, string cardHolderName, int cvc)
     {
-        var card = new Card
+        Card card = new()
         {
             CardNumber = cardNumber,
             CardHolderName = cardHolderName,

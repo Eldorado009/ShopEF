@@ -8,6 +8,11 @@ namespace Shop.Business.Services;
 public class CategoryService : ICategoryService
 {
     private readonly AppDbContext _dbContext;
+    public CategoryService(AppDbContext dbContext)
+    {
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    }
+
     public void CreateCategory(string name)
     {
         var category = new Category
